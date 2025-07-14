@@ -9,5 +9,12 @@ namespace MinhasDespesas.Models
         public string Descricao { get; set; }
         public int QtdeProduto { get; set; }
         public double ValorProduto { get; set; }
+        public double Total 
+        { 
+            get 
+            {
+                return QtdeProduto * ValorProduto;
+            }
+        }
     }
 }
