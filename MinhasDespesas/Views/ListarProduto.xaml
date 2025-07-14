@@ -4,11 +4,41 @@
              x:Class="MinhasDespesas.Views.ListarProduto"
              Title="Minhas Despesas">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Somar" />
+        <ToolbarItem Text="Somar" Clicked="ToolbarItem_Somar"/>
         <ToolbarItem Text="Adicionar" Clicked="ToolbarItem_Clicked"/>
     </ContentPage.ToolbarItems>
 
     <VerticalStackLayout>
-
+        <SearchBar x:Name="txt_search"
+                   Placeholder="Busca de Produtos"
+                   TextChanged="txt_search_TextChanged"
+                   />
+        <ListView x:Name="lst_produtos">
+            <ListView.Header>
+                <Grid ColumnDefinitions="*, *, *, *, *, *">
+                    <Label Grid.Column="0" Text="ID"/>
+                    <Label Grid.Column="1" Text="Descrição"/>
+                    <Label Grid.Column="2" Text="Quantidade"/>
+                    <Label Grid.Column="3" Text="Preço"/>
+                    <Label Grid.Column="4" Text="Total"/>
+                </Grid>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Text="Remover" Clicked="MenuItem_Clicked_Remove"/>
+                        </ViewCell.ContextActions>
+                        <Grid ColumnDefinitions="*, *, *, *, *, *">
+                            <Label Grid.Column="0" Text="{Binding Id}"/>
+                            <Label Grid.Column="1" Text="{Binding Descricao}"/>
+                            <Label Grid.Column="2" Text="{Binding QtdeProduto}"/>
+                            <Label Grid.Column="3" Text="{Binding ValorProduto}"/>
+                            <Label Grid.Column="4" Text="{Binding Total}"/> <!--a fazer-->
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </VerticalStackLayout>
 </ContentPage>
