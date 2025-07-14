@@ -34,7 +34,8 @@
                             <Label Grid.Column="1" Text="{Binding Descricao}"/>
                             <Label Grid.Column="2" Text="{Binding QtdeProduto}"/>
                             <Label Grid.Column="3" Text="{Binding ValorProduto}"/>
-                            <Label Grid.Column="4" Text="{Binding Total}"/> <!--a fazer-->
+                            <Label Grid.Column="4" Text="{Binding Total}"/>
+                          
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
