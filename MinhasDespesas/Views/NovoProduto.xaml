@@ -12,7 +12,7 @@
         <Label Text="Descrição do produto: "/>
           <Entry x:Name="txt_descricao"/>
         
-        <Label Text="Quantidade: " />
+        <Label Text="Qtde: " />
          <Entry x:Name="txt_quantidade" Keyboard="Numeric"/>
 
         <Label Text="Preço: "/>

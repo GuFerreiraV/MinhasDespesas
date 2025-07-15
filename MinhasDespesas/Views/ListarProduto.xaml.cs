@@ -54,6 +54,8 @@ public partial class ListarProduto : ContentPage
 
             string searchText = e.NewTextValue;
 
+            lst_produtos.IsRefreshing = true;
+
             lista.Clear(); // Limpa a lista atual para evitar duplicação de itens
 
             List<Produto> temp = await App.Db.Search(searchText);
@@ -63,6 +65,10 @@ public partial class ListarProduto : ContentPage
         catch (Exception ex)
         {
             await DisplayAlert("Ops", ex.Message, "OK");
+        }
+        finally 
+        {
+            lst_produtos.IsRefreshing = false;
         }
     }
 
@@ -84,13 +90,14 @@ public partial class ListarProduto : ContentPage
             // Pega os dados associados a um item selecionado na interface do 
             // usuario e trata ele como um Produto
             Produto prod = selected.BindingContext as Produto;
-            
+
             bool confirm = await DisplayAlert(
                 "Tem certeza?"
-                ,$"Remover {prod.Descricao}?",
+                , $"Remover {prod.Descricao}?",
                 "Sim", "Não");
-            
-            if (confirm) {
+
+            if (confirm)
+            {
 
                 await App.Db.Delete(prod.Id);
                 lista.Remove(prod);
@@ -112,10 +119,29 @@ public partial class ListarProduto : ContentPage
             {
                 BindingContext = prod,
             });
-        } 
-        catch (Exception ex) 
+        }
+        catch (Exception ex)
         {
             DisplayAlert("Ops", ex.Message, "OK");
+        }
+    }
+
+    // Método para recarregar a lista
+    private async void lst_produtos_Refreshing(object sender, EventArgs e)
+    {
+        try
+        {
+            lista.Clear();
+            List<Produto> temp = await App.Db.GetAll();
+            temp.ForEach(i => lista.Add(i));
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Ops", ex.Message, "OK");
+        }
+        finally
+        {
+            lst_produtos.IsRefreshing = false;
         }
     }
 }
