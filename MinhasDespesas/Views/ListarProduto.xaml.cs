@@ -8,71 +8,96 @@ public partial class ListarProduto : ContentPage
 {
 
     // Coleção para armazenar produtos, integração maior com a UI do XAML
-    ObservableCollection<Produto> lista = new ObservableCollection<Produto>(); 
+    ObservableCollection<Produto> lista = new ObservableCollection<Produto>();
 
-	public ListarProduto()
-	{
-		InitializeComponent();
+    public ListarProduto()
+    {
+        InitializeComponent();
 
-		lst_produtos.ItemsSource = lista;
-	}
+        lst_produtos.ItemsSource = lista;
+    }
 
     // Método para carregar os produtos do banco de dados
     protected async override void OnAppearing()
     {
-		List<Produto> temp = await App.Db.GetAll();
-		temp.ForEach(i => lista.Add(i));
+        try
+        {
+            lista.Clear();
+            List<Produto> temp = await App.Db.GetAll();
+            temp.ForEach(i => lista.Add(i));
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Ops", ex.Message, "OK");
+        }
+
     }
 
     private void ToolbarItem_Clicked(object sender, EventArgs e)
     {
-		try
-		{
-			Navigation.PushAsync(new Views.NovoProduto());
+        try
+        {
+            Navigation.PushAsync(new Views.NovoProduto());
 
-		}catch(Exception ex) 
-		{
-			DisplayAlert("Ops", ex.Message, "Ok");
-		}
+        }
+        catch (Exception ex)
+        {
+            DisplayAlert("Ops", ex.Message, "Ok");
+        }
     }
 
-	// Mecanismo de busca de produtos 
+    // Mecanismo de busca de produtos 
     private async void txt_search_TextChanged(object sender, TextChangedEventArgs e)
     {
-		string searchText = e.NewTextValue;
+        try
+        {
 
-		lista.Clear(); // Limpa a lista atual para evitar duplicação de itens
+            string searchText = e.NewTextValue;
 
-        List<Produto> temp = await App.Db.Search(searchText);
+            lista.Clear(); // Limpa a lista atual para evitar duplicação de itens
 
-		temp.ForEach(i => lista.Add(i));
+            List<Produto> temp = await App.Db.Search(searchText);
+
+            temp.ForEach(i => lista.Add(i));
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Ops", ex.Message, "OK");
+        }
     }
 
-	// Método para somar todos os produtos da nossa lista
+    // Método para somar todos os produtos da nossa lista
     private void ToolbarItem_Somar(object sender, EventArgs e)
     {
-		double soma = lista.Sum(i => i.Total);
+        double soma = lista.Sum(i => i.Total);
 
-		DisplayAlert("Total dos produtos: ",$"{soma:C}", "OK");
+        DisplayAlert("Total dos produtos: ", $"{soma:C}", "OK");
     }
 
     private async void MenuItem_Clicked_Remove(object sender, EventArgs e)
     {
-        // sender é o item do menu que o usuário clicou
-        if (sender is not MenuItem mI) return;
-        // O 'BindingContext' dele é a forma mais direta de saber a qual
-        // item da lista (o objeto 'Produto') esse botão pertence.
-        if (mI.BindingContext is not Produto produtoPraDeletar) return;
+        try
+        {
+            // Confirmando que o usuário vai selecionar o MenuItem
+            MenuItem selected = sender as MenuItem;
+            // Pega os dados associados a um item selecionado na interface do 
+            // usuario e trata ele como um Produto
+            Produto prod = selected.BindingContext as Produto;
+            
+            bool confirm = await DisplayAlert(
+                "Tem certeza?"
+                ,$"Remover {prod.Descricao}?",
+                "Sim", "Não");
+            
+            if (confirm) {
 
-		try
-		{
-			int searchId = produtoPraDeletar.Id;
-            int result = await App.Db.Delete(searchId);
-            await DisplayAlert("Sucesso", "Produto removido", "Ok");
+                await App.Db.Delete(prod.Id);
+                lista.Remove(prod);
+            }
         }
-		catch (Exception ex) 
-		{
-			await DisplayAlert("Ops", ex.Message, "Ok");
+        catch (Exception ex)
+        {
+            await DisplayAlert("Ops", ex.Message, "Ok");
         }
     }
 }
