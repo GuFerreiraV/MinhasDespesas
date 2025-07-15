@@ -22,7 +22,9 @@ public partial class NovoProduto : ContentPage
             // inserindo o produto no banco de dados
             await App.Db.Insert(prod);
 			await DisplayAlert("Sucesso", "Registro sucedido", "Ok");
-		}
+			await Navigation.PopAsync();
+
+        }
 		catch (Exception ex) 
 		{
 			await DisplayAlert("Ops", ex.Message, "OK");

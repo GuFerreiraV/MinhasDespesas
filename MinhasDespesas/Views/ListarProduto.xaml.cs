@@ -74,6 +74,7 @@ public partial class ListarProduto : ContentPage
         DisplayAlert("Total dos produtos: ", $"{soma:C}", "OK");
     }
 
+    // Método para remover um item no MenuItem
     private async void MenuItem_Clicked_Remove(object sender, EventArgs e)
     {
         try
@@ -98,6 +99,23 @@ public partial class ListarProduto : ContentPage
         catch (Exception ex)
         {
             await DisplayAlert("Ops", ex.Message, "Ok");
+        }
+    }
+
+    // 
+    private void lst_produtos_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+    {
+        try
+        {
+            Produto prod = e.SelectedItem as Produto;
+            Navigation.PushAsync(new Views.EditarProduto
+            {
+                BindingContext = prod,
+            });
+        } 
+        catch (Exception ex) 
+        {
+            DisplayAlert("Ops", ex.Message, "OK");
         }
     }
 }
